@@ -26,7 +26,6 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        
         // 1. 키 입력 받기
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
@@ -36,11 +35,11 @@ public class PlayerMove : MonoBehaviour
         // Transforms direction from local space to world space.
         dir = Camera.main.transform.TransformDirection(dir); // 글로벌 좌표계 (세상의 동서남북)
 
-        // 실습 과제 1. Shift 누르고 있으면 빨리 뛰기 (이동 속도 10)
+        // Shift 누르고 있으면 빨리 뛰기 (이동 속도 10)
         float speed = MoveSpeed;
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            Stamina -= StaminaConsumeSpeed * Time.deltaTime;    // 스태미나 소모
+            Stamina -= StaminaConsumeSpeed * Time.deltaTime;    // 스태미나 소모(3초)
             if (Stamina > 0)
             {
                 speed = RunSpeed;
@@ -48,17 +47,24 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            Stamina += StaminaChargeSpeed * Time.deltaTime; // 스태미나 충전
+            Stamina += StaminaChargeSpeed * Time.deltaTime; // 스태미나 충전(2초)
         }
 
         Stamina = Mathf.Clamp(Stamina, 0, MaxStamina);
         StaminaSliderUI.value = Stamina / MaxStamina; // 0~1
 
-        // 실습 과제 2.스태미너(Stamina) 구현
-        // -Shift 누른 동안에는 스태미나가 서서히 소모된다. (3초)
-        // - 아니면 스태미나가 소모 되는 속도보다 빠른 속도로 충전된다. (2초)
-
         // 3. 이동하기
         transform.position += speed * dir * Time.deltaTime;
+
+
+        // 버튼에 따라 카메라 FPS/TPS 변경 (처음에는 FPS) (9번: FPS, 0번: TPS)
+        if (Input.GetKey(KeyCode.Alpha9))
+        {
+            CameraManager.instance.FPSCam();
+        }
+        else if (Input.GetKey(KeyCode.Alpha0))
+        {
+            CameraManager.instance.TPSCam();
+        }
     }
 }
