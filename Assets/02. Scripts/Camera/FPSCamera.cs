@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Cursor = UnityEngine.Cursor;
 
 // 1인칭 슈팅 (First Person Shooter)
 public class FPSCamera : MonoBehaviour
@@ -21,8 +23,6 @@ public class FPSCamera : MonoBehaviour
     // 구현 순서:
     // 1. 캐릭터의 눈 위치로 카메라를 이동시킨다.
 
-
-
     // 순서:
     // 1. 마우스 입력(drag) 받는다.
     // 2. 마우스 입력 값을 이용해 회전 방향을 구한다.
@@ -30,16 +30,18 @@ public class FPSCamera : MonoBehaviour
 
     private void Start()
     {
+        // 마우스 커서 없애고 고정
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        // 1. 캐릭터의 눈 위치로 카메라를 이동시킨다.
-        transform.position = Target.position;
-
-
+        if (CameraManager.Instance.Mode == CameraMode.FPS)
+        {
+            // 1. 캐릭터의 눈 위치로 카메라를 이동시킨다.
+            transform.position = Target.position;
+        }
 
         // 1. 마우스 입력(drag) 받는다.
         float mouseX = Input.GetAxis("Mouse X"); // 방향에 따라 -1 ~ 1 사이의 값 반환
@@ -59,8 +61,8 @@ public class FPSCamera : MonoBehaviour
         //transform.eulerAngles += rotationDir * RotationSpeed * Time.deltaTime;
 
         // 3-1. 회전 방향에 따라 마우스 입력 값 만큼 미리 누적시킨다.
-        _mx = _mx + rotationDir.x * RotationSpeed * Time.deltaTime;
-        _my = _my + rotationDir.y * RotationSpeed * Time.deltaTime;
+        _mx += rotationDir.x * RotationSpeed * Time.deltaTime;
+        _my += rotationDir.y * RotationSpeed * Time.deltaTime;
 
         // 4. 시선의 상하 제한을 -90 ~ 90도 사이로 제한하고 싶다.
         //Vector3 rotation = transform.eulerAngles;
@@ -72,22 +74,14 @@ public class FPSCamera : MonoBehaviour
         //_mx = Mathf.Clamp(_mx, -270f, 270f);
 
 
-        transform.eulerAngles = new Vector3(_my, _mx, 0);
+        if (CameraManager.Instance.Mode == CameraMode.FPS)
+        {
+            transform.eulerAngles = new Vector3(-_my, _mx, 0);
+        }
 
         // 오일러 각도의 단점
         // 1. 짐벌락 현상
         // 2. 0보다 작아지면 -1이 아닌 359(360-1)가 된다. (유니티 내부에서 이렇게 자동 연산)
         // 위 문제 해결을 위해서 우리가 미리 연산을 해줘야 한다.
-
-        /*
-        if (rotation.x < -90)
-        {
-            rotation.x = -90;
-        }
-        else if (rotation.x > 90)
-        {
-            rotation.x = 90;
-        }
-        */
     }
 }

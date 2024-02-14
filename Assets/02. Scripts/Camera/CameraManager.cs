@@ -3,37 +3,46 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum CameraMode
+{
+    FPS,
+    TPS,
+    Top,
+    Back
+}
+
+// 역할: 카메라를 관리하는 관리자
 public class CameraManager : MonoBehaviour
 {
-    public static CameraManager instance;
+    public static CameraManager Instance { get; private set; }
+
+    private FPSCamera _FPSCamera;
+    private TPSCamera _TPSCamera;
+
+    public CameraMode Mode = CameraMode.FPS;
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
+
+        _FPSCamera = GetComponent<FPSCamera>();
+        _TPSCamera = GetComponent<TPSCamera>();
+
+        SetCameraMode(CameraMode.FPS);
     }
 
-    void Start()
+    public void SetCameraMode(CameraMode mode)
     {
-        // 처음에는 FPS       
-        gameObject.GetComponent<FPSCamera>().enabled = true;
-        gameObject.GetComponent<TPSCamera>().enabled = false;
-    }
-
-    public void FPSCam()
-    {
-        gameObject.GetComponent<FPSCamera>().enabled = true;
-        gameObject.GetComponent<TPSCamera>().enabled = false;
-    }
-    public void TPSCam()
-    {
-        gameObject.GetComponent<FPSCamera>().enabled = false;
-        gameObject.GetComponent<TPSCamera>().enabled = true;
+        Mode = mode;
+        
+        _FPSCamera.enabled = (mode == CameraMode.FPS);
+        _TPSCamera.enabled = (mode == CameraMode.TPS);
     }
 }
