@@ -101,6 +101,12 @@ public class PlayerMove : MonoBehaviour
             _yVelocity = 0;
             _jumpCount = 0;
         }
+        // 떨어지는 동안 점프를 할 수 없도록 설정
+        if (!_characterController.isGrounded && !_isJumping)
+        {
+            _isJumping = false;
+            _jumpCount = MaxJumpCount;
+        }
         // 1. 만약에 [spacebar] 버튼을 누르는 순간
         if (Input.GetKeyDown (KeyCode.Space) && _jumpCount < MaxJumpCount) // 누른 그 순간만 true
         {

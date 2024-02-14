@@ -13,7 +13,7 @@ public class TPSCamera : MonoBehaviour
     public float RotationSpeed = 200;
     // - 타겟(캐릭터)
     public Transform Target;
-    public Vector3 Offset = new Vector3(0, 3f, -3f); // 오프셋 (0, 3f, -3f)
+    public Vector3 Offset = new Vector3(0, 3f, -3f); // 오프셋 (0, 6f, -4f)
     // - 누적할 x각도와 y각도
     private float _mx = 0;
     private float _my = 0;
