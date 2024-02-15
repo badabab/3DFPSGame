@@ -25,6 +25,7 @@ public class MinimapCamera : MonoBehaviour
         targetEulerAngles.z = _initalEulerAngles.z;
         transform.eulerAngles = targetEulerAngles;
 
+        // ESC누르면 화면 고정 On/Off
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             isLock = !isLock;
