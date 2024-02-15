@@ -8,7 +8,8 @@ public class Bomb : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {       
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
         GameObject effect = Instantiate(BombEffectPrefab);
         effect.transform.position = this.transform.position;
     }
