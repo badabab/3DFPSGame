@@ -110,7 +110,7 @@ public class PlayerMove : MonoBehaviour
 
         // Shift 누르고 있으면 빨리 뛰기 (이동 속도 10)
         float speed = MoveSpeed;
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && (h != 0 || v != 0))
         {
             Stamina -= StaminaConsumeSpeed * Time.deltaTime;    // 스태미나 소모(3초)
             if (Stamina > 0)
