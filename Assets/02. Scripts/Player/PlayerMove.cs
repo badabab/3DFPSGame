@@ -43,6 +43,17 @@ public class PlayerMove : MonoBehaviour
     // 2. 플레이어에게 y축에 있어 중력을 적용한다.
 
 
+    // 목표: 벽에 닿아있는 상태에서 스페이스바를 누르면 벽타기를 하고 싶다.
+    // 필요 속성:
+    // - 벽타기 파워
+    public float ClimbingPower = 7f;
+    // - 벽타기 상태
+    private bool _isClimbing = false;
+    public float ClimbStaminaConsumeSpeed = 50f; // 벽타기 초당 스태미나 소모량
+    // 구현 순서:
+    // 1. 만약에 벽에 닿아있는데
+    // 2. [Spacebar] 버튼을 누르고 있으면
+    // 3. 벽을 타겠다.
 
     private void Awake()
     {
@@ -57,6 +68,27 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        // 1. 만약에 벽에 닿아있는데
+        if (_characterController.collisionFlags == CollisionFlags.Sides)
+        {
+            // 2. [Spacebar] 버튼을 누르고 있으면
+            if (Input.GetKey(KeyCode.Space))
+            {               
+                Stamina -= ClimbStaminaConsumeSpeed * Time.deltaTime;             
+                if (Stamina > 0)
+                {
+                    // 3. 벽을 타겠다.
+                    _isClimbing = true;
+                    _yVelocity = ClimbingPower;
+                }
+                else if (Stamina < 0 && _isClimbing)
+                {
+                    _isClimbing = false;
+                    _yVelocity = 0f;
+                }               
+            }
+        }
+
         // 버튼에 따라 카메라 FPS/TPS 변경 (처음에는 FPS) (9번: FPS, 0번: TPS)
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
@@ -88,7 +120,10 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            Stamina += StaminaChargeSpeed * Time.deltaTime; // 스태미나 충전(2초)
+            if (_characterController.isGrounded)
+            {
+                Stamina += StaminaChargeSpeed * Time.deltaTime; // 스태미나 충전(2초)
+            }          
         }
 
         Stamina = Mathf.Clamp(Stamina, 0, MaxStamina);
@@ -98,6 +133,7 @@ public class PlayerMove : MonoBehaviour
         if (_characterController.isGrounded) // 땅일 때
         {
             _isJumping = false;
+            _isClimbing = false;
             _yVelocity = 0;
             _jumpCount = 0;
         }
