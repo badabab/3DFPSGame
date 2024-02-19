@@ -12,7 +12,7 @@ public class PlayerGunFIre : MonoBehaviour
 
     private int _gunCount = 0; // 남은 총알
     public int MaxGunCount = 30; // 최대 총알 개수
-    public float GunLoadTime = 1.5f;
+    public float GunLoadTime = 1.5f; // 재장전 시간
 
     private float _gunTimer = 0f;
     public float GunCoolTime = 0.2f;
@@ -20,8 +20,8 @@ public class PlayerGunFIre : MonoBehaviour
     [Header("총알 개수 UI")]
     public Text GunCountUI;
 
-    private Coroutine _loadGunCoroutine;
-    private bool _isLoading = false;
+    private Coroutine _reloadCoroutine;
+    private bool _isLoading = false; // 재장전 상태
     public Text GunLoadingUI;
 
     private void Awake()
@@ -63,14 +63,17 @@ public class PlayerGunFIre : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.R))
         {
-            _loadGunCoroutine = StartCoroutine(LoadGun_Coroutine(GunLoadTime));
-            RefreshUI();
+            if (!_isLoading) // 재장전 중이 아닐 때 실행
+            {
+                _reloadCoroutine = StartCoroutine(ReLoad_Coroutine(GunLoadTime));
+                RefreshUI();
+            }       
         } 
         if (_isLoading)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                StopCoroutine(_loadGunCoroutine);  
+                StopCoroutine(_reloadCoroutine);  
                 _isLoading = false;
                 RefreshUI();
             }          
@@ -80,14 +83,7 @@ public class PlayerGunFIre : MonoBehaviour
     private void RefreshUI()
     {
         GunCountUI.text = $"Bullet {_gunCount} / {MaxGunCount}";
-        if (_isLoading )
-        {
-            GunLoadingUI.text = $"재장전 중...";
-        }
-        else
-        {
-            GunLoadingUI.text = $"";
-        }     
+        GunLoadingUI.text = _isLoading ? $"재장전 중..." : $"";
     }
     private void Shooting()
     {
@@ -95,7 +91,7 @@ public class PlayerGunFIre : MonoBehaviour
         _gunTimer = GunCoolTime;
         RefreshUI();
     }
-    private IEnumerator LoadGun_Coroutine(float load_time)
+    private IEnumerator ReLoad_Coroutine(float load_time)
     {
         _isLoading = true;
         yield return new WaitForSeconds(load_time);
