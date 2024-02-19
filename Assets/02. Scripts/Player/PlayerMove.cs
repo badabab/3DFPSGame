@@ -55,19 +55,28 @@ public class PlayerMove : MonoBehaviour
     // 2. [Spacebar] 버튼을 누르고 있으면
     // 3. 벽을 타겠다.
 
+    [Range(0, 100)]
+    public int Health;
+    public int MaxHealth = 100;
+    public Slider HealthSliderUI;
+
+    
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
     }
 
-
     private void Start()
     {
         Stamina = MaxStamina;
+        Health = MaxHealth;
     }
 
     void Update()
     {
+        HealthSliderUI.value = (float)Health / (float)MaxHealth;
+
         // 1. 만약에 벽에 닿아있는데
         if (_characterController.collisionFlags == CollisionFlags.Sides)
         {
