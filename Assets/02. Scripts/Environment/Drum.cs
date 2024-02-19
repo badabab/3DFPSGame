@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drum : MonoBehaviour
+public class Drum : MonoBehaviour, IHitable
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private int _hitCount = 0;
+    public int Count = 3;
 
-    // Update is called once per frame
-    void Update()
+    public void Hit(int damage)
     {
-        
+        _hitCount++;
+        if (_hitCount >= Count)
+        {
+            Destroy(gameObject);
+        }
     }
 }
