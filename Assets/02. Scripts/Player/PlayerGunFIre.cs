@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,9 +9,14 @@ using UnityEngine.UI;
 public class PlayerGunFire : MonoBehaviour
 {
     public Gun CurrentGun;    // 현재 들고있는 총
-    public Gun[] GunInventory;
+    public List<Gun> GunInventory;
+    private int _currentGunIndex;
 
     private float _timer;
+
+    private const int DefaultFOV = 60;
+    private const int ZoomFOV = 20;
+    private bool _isZoomMode = false;
 
     // 목표: 마우스 왼쪽 버튼을 누르면 시선이 바라보는 방향으로 총을 발사하고 싶다.
     // 필요 속성
@@ -21,6 +27,8 @@ public class PlayerGunFire : MonoBehaviour
     // - 총알 개수 텍스트 UI
     public Text BulletTextUI;
     public Image ProfileImageUI;
+    public GameObject CrosshairUI;
+    public GameObject CorsshairZoomUI;
 
     private bool _isReloading = false;      // 재장전 중이냐?
     public GameObject ReloadTextObject;
@@ -29,27 +37,26 @@ public class PlayerGunFire : MonoBehaviour
     {
         RefreshUI();
         RefreshGun();
-    }
-
-    private void RefreshUI()
-    {
-        BulletTextUI.text = $"{CurrentGun.BulletRemainCount:d2}/{CurrentGun.BulletMaxCount}";
-        ProfileImageUI.sprite = CurrentGun.ProfileImage;
-    }
-    private IEnumerator Reload_Coroutine()
-    {
-        _isReloading = true;
-
-        // R키 누르면 1.5초 후 재장전, (중간에 총 쏘는 행위를 하면 재장전 취소)
-        yield return new WaitForSeconds(CurrentGun.ReloadTime);
-        CurrentGun.BulletRemainCount = CurrentGun.BulletMaxCount;
-        RefreshUI();
-
-        _isReloading = false;
+        _currentGunIndex = 0;
     }
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(2) && CurrentGun.GType == GunType.Sniper)
+        {
+            _isZoomMode = !_isZoomMode;
+            RefreshZoomMode();
+        }
+
+        if (_isZoomMode)
+        {
+            if (CurrentGun.GType != GunType.Sniper)
+            {
+                _isZoomMode = false;
+                RefreshZoomMode();
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletRemainCount < CurrentGun.BulletMaxCount)
         {
             if (!_isReloading)
@@ -102,27 +109,36 @@ public class PlayerGunFire : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            _currentGunIndex = 0; // Rifle
             CurrentGun = GunInventory[0];
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            _currentGunIndex = 1; // Sniper
             CurrentGun = GunInventory[1];
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
+            _currentGunIndex = 2; // Pistol
             CurrentGun = GunInventory[2];
         }
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
+        if (Input.GetKeyDown(KeyCode.LeftBracket)) // "["
         {
-            int currentIndex = Array.IndexOf(GunInventory, CurrentGun);
-            int previousIndex = (currentIndex - 1 + GunInventory.Length) % GunInventory.Length;
-            CurrentGun = GunInventory[previousIndex];
+            _currentGunIndex--;
+            if (_currentGunIndex < 0)
+            {
+                _currentGunIndex = GunInventory.Count - 1;
+            }
+            CurrentGun = GunInventory[_currentGunIndex];
         }
-        else if (Input.GetKeyDown (KeyCode.RightBracket))
+        else if (Input.GetKeyDown (KeyCode.RightBracket)) // "]"
         {
-            int currentIndex = Array.IndexOf(GunInventory, CurrentGun);
-            int nextIndex = (currentIndex + 1) % GunInventory.Length;
-            CurrentGun = GunInventory[nextIndex];
+            _currentGunIndex++;
+            if (_currentGunIndex >= GunInventory.Count)
+            {
+                _currentGunIndex = 0;
+            }
+            CurrentGun = GunInventory[_currentGunIndex];
         }
         RefreshGun();
         RefreshUI();
@@ -132,15 +148,37 @@ public class PlayerGunFire : MonoBehaviour
     {
         foreach (Gun gun in GunInventory)
         {
-            /*if (gun == CurrentGun)
-            {
-                gun.gameObject.SetActive(true);
-            }
-            else
-            {
-                gun.gameObject.SetActive(false);
-            }*/
             gun.gameObject.SetActive(gun == CurrentGun);
+        }
+    }
+    private void RefreshUI()
+    {
+        BulletTextUI.text = $"{CurrentGun.BulletRemainCount:d2}/{CurrentGun.BulletMaxCount}";
+        ProfileImageUI.sprite = CurrentGun.ProfileImage;
+
+        CrosshairUI.SetActive(!_isZoomMode);
+        CorsshairZoomUI.SetActive(_isZoomMode);
+    }
+    private IEnumerator Reload_Coroutine()
+    {
+        _isReloading = true;
+
+        // R키 누르면 1.5초 후 재장전, (중간에 총 쏘는 행위를 하면 재장전 취소)
+        yield return new WaitForSeconds(CurrentGun.ReloadTime);
+        CurrentGun.BulletRemainCount = CurrentGun.BulletMaxCount;
+        RefreshUI();
+
+        _isReloading = false;
+    }
+    private void RefreshZoomMode()
+    {
+        if (_isZoomMode)
+        {
+            Camera.main.fieldOfView = ZoomFOV;
+        }
+        else
+        {
+            Camera.main.fieldOfView = DefaultFOV;
         }
     }
 }
