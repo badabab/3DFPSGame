@@ -1,111 +1,146 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerGunFIre : MonoBehaviour
+public class PlayerGunFire : MonoBehaviour
 {
-    public int Damage = 1;
+    public Gun CurrentGun;    // 현재 들고있는 총
+    public Gun[] GunInventory;
+
+    private float _timer;
 
     // 목표: 마우스 왼쪽 버튼을 누르면 시선이 바라보는 방향으로 총을 발사하고 싶다.
-    // 필요 속성:
+    // 필요 속성
     // - 총알 튀는 이펙트 프리팹
     public ParticleSystem HitEffect;
 
-    private int _gunCount = 0; // 남은 총알
-    public int MaxGunCount = 30; // 최대 총알 개수
-    public float GunLoadTime = 1.5f; // 재장전 시간
 
-    private float _gunTimer = 0f;
-    public float GunCoolTime = 0.2f;
+    // - 총알 개수 텍스트 UI
+    public Text BulletTextUI;
+    public Image ProfileImageUI;
 
-    [Header("총알 개수 UI")]
-    public Text GunCountUI;
+    private bool _isReloading = false;      // 재장전 중이냐?
+    public GameObject ReloadTextObject;
 
-    private Coroutine _reloadCoroutine;
-    private bool _isLoading = false; // 재장전 상태
-    public Text GunLoadingUI;
-
-    private void Awake()
-    {   
-        _gunTimer = 0;
-        _gunCount = MaxGunCount;
-        RefreshUI();
-    }
-    private void Update()
+    private void Start()
     {
-        // 1. 만약에 마우스 왼쪽 버튼을 누르면
-        if (Input.GetMouseButton(0) && _gunCount > 0) // 왼쪽0, 오른쪽1, 휠2
-        {
-            _gunTimer -= Time.deltaTime;
-            // 2. 레이(광선)를 생성하고, 위치와 방향을 설정한다.
-            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-            // 3. 레이를 발사한다.
-            // 4. 레이가 부딪힌 대상의 정보를 받아온다.
-            RaycastHit hitInfo;
-            bool IsHit = Physics.Raycast(ray, out hitInfo);
-            if (IsHit && _gunTimer <= 0)
-            {
-                // 5. 부딪힌 위치에 (총알이 튀는) 이펙트를 생성한다.
-                //Debug.Log(hitInfo.point);
-                HitEffect.gameObject.transform.position = hitInfo.point;
-                HitEffect.gameObject.transform.forward = hitInfo.normal; // 법선 벡터
-                HitEffect.Play();
-                Shooting();
-
-                // 레이저를 몬스터에게 맞출 시 몬스터 체력 닳는 기능 구현
-                IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
-                if (hitObject != null)  // 때릴 수 있는 친구인가요?
-                {
-                    hitObject.Hit(Damage);
-                }
-            } 
-            else if (!IsHit && _gunTimer <= 0)
-            {
-                Shooting();
-            }
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _gunTimer = 0;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (!_isLoading) // 재장전 중이 아닐 때 실행
-            {
-                _reloadCoroutine = StartCoroutine(ReLoad_Coroutine(GunLoadTime));
-                RefreshUI();
-            }       
-        } 
-        if (_isLoading)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                StopCoroutine(_reloadCoroutine);  
-                _isLoading = false;
-                RefreshUI();
-            }          
-        }
+        RefreshUI();
+        RefreshGun();
     }
 
     private void RefreshUI()
     {
-        GunCountUI.text = $"Bullet {_gunCount} / {MaxGunCount}";
-        GunLoadingUI.text = _isLoading ? $"재장전 중..." : $"";
+        BulletTextUI.text = $"{CurrentGun.BulletRemainCount:d2}/{CurrentGun.BulletMaxCount}";
+        ProfileImageUI.sprite = CurrentGun.ProfileImage;
     }
-    private void Shooting()
+    private IEnumerator Reload_Coroutine()
     {
-        _gunCount--;
-        _gunTimer = GunCoolTime;
+        _isReloading = true;
+
+        // R키 누르면 1.5초 후 재장전, (중간에 총 쏘는 행위를 하면 재장전 취소)
+        yield return new WaitForSeconds(CurrentGun.ReloadTime);
+        CurrentGun.BulletRemainCount = CurrentGun.BulletMaxCount;
+        RefreshUI();
+
+        _isReloading = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletRemainCount < CurrentGun.BulletMaxCount)
+        {
+            if (!_isReloading)
+            {
+                StartCoroutine(Reload_Coroutine());
+            }
+        }
+
+        ReloadTextObject.SetActive(_isReloading);
+
+        _timer += Time.deltaTime;
+
+        // 1. 만약에 마우스 왼쪽 버튼을 누른 상태 && 쿨타임이 다 지난 상태 && 총알 개수 > 0
+        if (Input.GetMouseButton(0) && _timer >= CurrentGun.FireCooltime && CurrentGun.BulletRemainCount > 0)
+        {
+            // 재장전 취소
+            if (_isReloading)
+            {
+                StopAllCoroutines();
+                _isReloading = false;
+            }
+
+            CurrentGun.BulletRemainCount -= 1;
+            RefreshUI();
+
+            _timer = 0;
+
+            // 2. 레이(광선)을 생성하고, 위치와 방향을 설정한다.
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            // 3. 레이를 발사한다.
+            // 4. 레이가 부딛힌 대상의 정보를 받아온다.
+            RaycastHit hitInfo;
+            bool isHit = Physics.Raycast(ray, out hitInfo);
+            if (isHit)
+            {
+                //실습 과제 18. 레이저를 몬스터에게 맞출 시 몬스터 체력 닳는 기능 구현
+                IHitable hitObject = hitInfo.collider.GetComponent<IHitable>();
+                if (hitObject != null)  // 때릴 수 있는 친구인가요?
+                {
+                    hitObject.Hit(CurrentGun.Damage);
+                }
+
+                // 5. 부딛힌 위치에 (총알이 튀는)이펙트를 위치한다.
+                HitEffect.gameObject.transform.position = hitInfo.point;
+                // 6. 이펙트가 쳐다보는 방향을 부딛힌 위치의 법선 벡터로 한다.
+                HitEffect.gameObject.transform.forward = hitInfo.normal;
+                HitEffect.Play();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            CurrentGun = GunInventory[0];
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CurrentGun = GunInventory[1];
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CurrentGun = GunInventory[2];
+        }
+        if (Input.GetKeyDown(KeyCode.LeftBracket))
+        {
+            int currentIndex = Array.IndexOf(GunInventory, CurrentGun);
+            int previousIndex = (currentIndex - 1 + GunInventory.Length) % GunInventory.Length;
+            CurrentGun = GunInventory[previousIndex];
+        }
+        else if (Input.GetKeyDown (KeyCode.RightBracket))
+        {
+            int currentIndex = Array.IndexOf(GunInventory, CurrentGun);
+            int nextIndex = (currentIndex + 1) % GunInventory.Length;
+            CurrentGun = GunInventory[nextIndex];
+        }
+        RefreshGun();
         RefreshUI();
     }
-    private IEnumerator ReLoad_Coroutine(float load_time)
+
+    private void RefreshGun()
     {
-        _isLoading = true;
-        yield return new WaitForSeconds(load_time);
-        _isLoading = false;
-        _gunCount = MaxGunCount;
-        RefreshUI();
+        foreach (Gun gun in GunInventory)
+        {
+            /*if (gun == CurrentGun)
+            {
+                gun.gameObject.SetActive(true);
+            }
+            else
+            {
+                gun.gameObject.SetActive(false);
+            }*/
+            gun.gameObject.SetActive(gun == CurrentGun);
+        }
     }
 }

@@ -11,6 +11,8 @@ public class Bomb : MonoBehaviour
     public int Damage = 60;
     public GameObject BombEffectPrefab;
 
+    private Collider[] _colliders = new Collider[10];
+
     private void OnCollisionEnter(Collision other)          // 1. 터질 때
     {       
         gameObject.SetActive(false);            //Destroy(gameObject);
@@ -23,13 +25,14 @@ public class Bomb : MonoBehaviour
         //    콜라이더 컴포넌트들을 모두 찾아 배열로 반환하는 함수
         // 영역의 형태: 스피어, 큐브, 캡슐
         int layer = LayerMask.GetMask("Monster") | LayerMask.GetMask("Player");
-        Collider[] colliders = Physics.OverlapSphere(transform.position, ExplosionRadius, layer);
+        int count = Physics.OverlapSphereNonAlloc(transform.position, ExplosionRadius, _colliders, layer);
         // | : 비트 합 연산자
 
         // 3. 찾은 콜라이더 중에서 타격 가능한(IHitable) 오브젝트를 찾아서 Hit()한다.
-        foreach (Collider collider in colliders)
+        for (int i = 0; i < count; i++)
         {
-            IHitable hitable = collider.gameObject.GetComponent<IHitable>();
+            Collider c = _colliders[i];
+            IHitable hitable = c.gameObject.GetComponent<IHitable>();
             if (hitable != null)
             {
                 hitable.Hit(Damage);

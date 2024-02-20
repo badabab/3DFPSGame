@@ -74,6 +74,6 @@ public class PlayerBombFire : MonoBehaviour
 
     private void RefreshUI()
     {
-        BombCountUI.text = $"Bomb {_bombCount} / {MaxBombCount}";
+        BombCountUI.text = $"{_bombCount} / {MaxBombCount}";
     }
 }

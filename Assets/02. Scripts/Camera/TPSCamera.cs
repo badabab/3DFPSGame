@@ -18,6 +18,8 @@ public class TPSCamera : MonoBehaviour
     private float _mx = 0;
     private float _my = 0;
 
+    public float a = 5;
+
     private void LateUpdate()
     {
         if (CameraManager.Instance.Mode == CameraMode.TPS)
@@ -29,6 +31,8 @@ public class TPSCamera : MonoBehaviour
             // 2. 플레이어를 쳐다보게 한다.
             // LookAt: Rotates the transform so the forward vector points at target's current position
             transform.LookAt(Target);
+
+            transform.position = Target.position - transform.forward * Offset.magnitude + Vector3.up * (Offset.y - a);
         }
         
         // 3. 마우스 입력을 받는다.
