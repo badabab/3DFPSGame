@@ -17,6 +17,8 @@ public class PlayerGunFire : MonoBehaviour
     private const int DefaultFOV = 60;
     private const int ZoomFOV = 20;
     private bool _isZoomMode = false;
+    private Coroutine _fovCoroutine;
+    public float ZoomTime = 0.3f;
 
     // 목표: 마우스 왼쪽 버튼을 누르면 시선이 바라보는 방향으로 총을 발사하고 싶다.
     // 필요 속성
@@ -48,7 +50,7 @@ public class PlayerGunFire : MonoBehaviour
             RefreshZoomMode();
         }
 
-        if (_isZoomMode)
+        if (_isZoomMode && CurrentGun.GType != GunType.Sniper)
         {
             if (CurrentGun.GType != GunType.Sniper)
             {
@@ -172,13 +174,23 @@ public class PlayerGunFire : MonoBehaviour
     }
     private void RefreshZoomMode()
     {
-        if (_isZoomMode)
+        if (_fovCoroutine != null)
         {
-            Camera.main.fieldOfView = ZoomFOV;
+            StopCoroutine(_fovCoroutine);
         }
-        else
+        _fovCoroutine = StartCoroutine(SmoothFOVChange_Coroutine(_isZoomMode? ZoomFOV : DefaultFOV, ZoomTime));
+    }
+    IEnumerator SmoothFOVChange_Coroutine(float targetFOV, float duration)
+    {
+        float currentFOV = Camera.main.fieldOfView;
+        float startTime = Time.time;
+
+        while (Time.time - startTime < duration)
         {
-            Camera.main.fieldOfView = DefaultFOV;
+            float t = (Time.time - startTime) / duration;
+            Camera.main.fieldOfView = Mathf.Lerp(currentFOV, targetFOV, t);
+            yield return null;
         }
+        Camera.main.fieldOfView = targetFOV;
     }
 }
