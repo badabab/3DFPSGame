@@ -16,6 +16,8 @@ public class Drum : MonoBehaviour, IHitable
     public float ExplosionRadius = 5;
     public int Damage = 70;
 
+    private bool _isDestroyed = false;
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -26,43 +28,43 @@ public class Drum : MonoBehaviour, IHitable
         _hitCount++;
         if (_hitCount >= Count)
         {
-            Kill();         
+            if (!_isDestroyed)
+            {
+                Explosion();
+            }     
         }
     }
 
-    private void Kill()
+    private void Explosion()
     {
+        _isDestroyed = true;
+
         GameObject explosion = Instantiate(DrumEffectPrefab);
         explosion.transform.position = this.transform.position;
 
         _rigidbody.AddForce(Vector3.up * UpForce, ForceMode.Impulse);
         _rigidbody.AddTorque(new Vector3(1, 0, 1) * UpForce / 2f);  // 회전
 
-        int findLayer = LayerMask.GetMask("Monster") | LayerMask.GetMask("Player") | LayerMask.GetMask("Env");
+        int findLayer = LayerMask.GetMask("Monster") | LayerMask.GetMask("Player") | LayerMask.GetMask("Environment");
         Collider[] colliders = Physics.OverlapSphere(transform.position, ExplosionRadius, findLayer);
       
         foreach (Collider c in colliders)
         {
-            if (c.CompareTag("Drum"))
+            if (c.gameObject.layer == LayerMask.NameToLayer("Environment"))
             {
                 Drum drum = c.GetComponent<Drum>();
-                if (drum != null)
+                if (drum != null && !drum._isDestroyed)
                 {
-                    drum.Kill();
+                    drum.Explosion();
                 }
             }
-            else
+            else if(c.gameObject.layer == LayerMask.NameToLayer("Monster") || c.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                IHitable hitable = c.gameObject.GetComponent<IHitable>();
-                if (hitable != null)
-                {
-                    hitable.Hit(Damage);
-                }
-                /*IHitable hitable = null;
+                IHitable hitable = null;
                 if (c.TryGetComponent<IHitable>(out hitable))
                 {
                     hitable.Hit(Damage);
-                }*/
+                }
             }
         }
 

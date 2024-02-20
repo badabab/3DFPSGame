@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5256220896429404322}
   m_Layer: 10
   m_Name: Drum
-  m_TagString: Drum
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
