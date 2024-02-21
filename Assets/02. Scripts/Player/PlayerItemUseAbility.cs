@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class PlayerItemUseAbility : MonoBehaviour
 {
-    // T, Y, U 눌러서 아이템 사용
-
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        
-    }
+        if (Input.GetKeyDown(KeyCode.T))    // HealthItem
+        {  
+            ItemManager.Instance.TryUseItem(ItemType.Health);
+        }
+        else if (Input.GetKeyDown(KeyCode.Y))   // StaminaItem
+        {
+            ItemManager.Instance.TryUseItem(ItemType.Stamina);
+        }
+        else if (Input.GetKeyDown(KeyCode.U))   // BulletItem
+        {
+            ItemManager.Instance.TryUseItem(ItemType.Bullet);
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        ItemManager.Instance.RefreshUI();
     }
 }
