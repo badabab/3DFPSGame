@@ -12,13 +12,14 @@ public class PlayerGunFire : MonoBehaviour
     public List<Gun> GunInventory;
     private int _currentGunIndex;
 
-    private float _timer;
+    private float _timer = 0;
 
     private const int DefaultFOV = 60;
     private const int ZoomFOV = 20;
     private bool _isZoomMode = false;
-    private Coroutine _fovCoroutine;
-    public float ZoomTime = 0.3f;
+    private float _zoomProgress = 1; // 0 ~ 1
+    public float ZoomInDuration = 0.3f;
+    public float ZoomOutDuration = 0.2f;
 
     // 목표: 마우스 왼쪽 버튼을 누르면 시선이 바라보는 방향으로 총을 발사하고 싶다.
     // 필요 속성
@@ -47,16 +48,26 @@ public class PlayerGunFire : MonoBehaviour
         if (Input.GetMouseButtonDown(2) && CurrentGun.GType == GunType.Sniper)
         {
             _isZoomMode = !_isZoomMode;
-            RefreshZoomMode();
+            _zoomProgress = 0;
+        }
+        if (CurrentGun.GType == GunType.Sniper && _zoomProgress < 1)
+        {
+            if (_isZoomMode)
+            {
+                _zoomProgress += Time.deltaTime / ZoomInDuration;
+                Camera.main.fieldOfView = Mathf.Lerp(DefaultFOV, ZoomFOV, _zoomProgress);
+            }
+            else
+            {
+                _zoomProgress += Time.deltaTime / ZoomOutDuration;
+                Camera.main.fieldOfView = Mathf.Lerp(ZoomFOV, DefaultFOV, _zoomProgress);
+            }
         }
 
         if (_isZoomMode && CurrentGun.GType != GunType.Sniper)
         {
-            if (CurrentGun.GType != GunType.Sniper)
-            {
-                _isZoomMode = false;
-                RefreshZoomMode();
-            }
+            _isZoomMode = false;
+            Camera.main.fieldOfView = DefaultFOV;
         }
 
         if (Input.GetKeyDown(KeyCode.R) && CurrentGun.BulletRemainCount < CurrentGun.BulletMaxCount)
@@ -133,7 +144,7 @@ public class PlayerGunFire : MonoBehaviour
             }
             CurrentGun = GunInventory[_currentGunIndex];
         }
-        else if (Input.GetKeyDown (KeyCode.RightBracket)) // "]"
+        else if (Input.GetKeyDown(KeyCode.RightBracket)) // "]"
         {
             _currentGunIndex++;
             if (_currentGunIndex >= GunInventory.Count)
@@ -171,26 +182,5 @@ public class PlayerGunFire : MonoBehaviour
         RefreshUI();
 
         _isReloading = false;
-    }
-    private void RefreshZoomMode()
-    {
-        if (_fovCoroutine != null)
-        {
-            StopCoroutine(_fovCoroutine);
-        }
-        _fovCoroutine = StartCoroutine(SmoothFOVChange_Coroutine(_isZoomMode? ZoomFOV : DefaultFOV, ZoomTime));
-    }
-    IEnumerator SmoothFOVChange_Coroutine(float targetFOV, float duration)
-    {
-        float currentFOV = Camera.main.fieldOfView;
-        float startTime = Time.time;
-
-        while (Time.time - startTime < duration)
-        {
-            float t = (Time.time - startTime) / duration;
-            Camera.main.fieldOfView = Mathf.Lerp(currentFOV, targetFOV, t);
-            yield return null;
-        }
-        Camera.main.fieldOfView = targetFOV;
     }
 }
