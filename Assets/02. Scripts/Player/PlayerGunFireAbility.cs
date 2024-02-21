@@ -6,7 +6,7 @@ using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerGunFire : MonoBehaviour
+public class PlayerGunFireAbility : MonoBehaviour
 {
     public Gun CurrentGun;    // 현재 들고있는 총
     public List<Gun> GunInventory;

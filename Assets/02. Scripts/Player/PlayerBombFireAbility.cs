@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerBombFire : MonoBehaviour
+public class PlayerBombFireAbility : MonoBehaviour
 {
     // 목표: 마우스 오른쪽 버튼을 누르면 시선이 바라보는 방향으로 수류탄을 던지고 싶다.
     // 필요 속성
