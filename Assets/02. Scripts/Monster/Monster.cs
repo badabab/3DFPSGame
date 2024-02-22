@@ -9,7 +9,9 @@ public class Monster : MonoBehaviour, IHitable
     public int Health = 100;
     public int MaxHealth = 100;
     public Slider HealthSliderUI;
-   
+
+    
+
     void Start()
     {
         Init();
@@ -30,7 +32,14 @@ public class Monster : MonoBehaviour, IHitable
         Health -= damage;
         if (Health <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+    }
+    // 몬스터 죽을 때 아이템 드랍
+    public void Die()
+    {
+        ItemObjectFactory.Instance.MakePercent(transform.position);
+
+        Destroy(gameObject);
     }
 }

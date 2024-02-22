@@ -18,6 +18,7 @@ public class Drum : MonoBehaviour, IHitable
 
     private bool _isDestroyed = false;
 
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -67,7 +68,7 @@ public class Drum : MonoBehaviour, IHitable
                 }
             }
         }
-
+        ItemObjectFactory.Instance.MakePercent(transform.position);
         StartCoroutine(DestroyDelay_Coroutine(DestroyDelay));
     }
     IEnumerator DestroyDelay_Coroutine(float delay)

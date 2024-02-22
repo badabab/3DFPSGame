@@ -326,6 +326,9 @@ MonoBehaviour:
   Health: 100
   MaxHealth: 100
   HealthSliderUI: {fileID: 5139517666310062457}
+  HealthItemPrefab: {fileID: 4871666284723307499, guid: 273bbd5807ca89c498140e573e8d5511, type: 3}
+  StaminaItemPrefab: {fileID: 7548805121393496897, guid: 4e8cdf4d121c3f04a990bfa583dfca20, type: 3}
+  BulletItemPrefab: {fileID: 1856875472464475417, guid: e0adae5aea6629b4c97aed0b3aab83de, type: 3}
 --- !u!1 &4874497736327498275
 GameObject:
   m_ObjectHideFlags: 0

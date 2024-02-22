@@ -13,10 +13,6 @@ public class ItemManager : MonoBehaviour
     public Text HealthItemCountTextUI;
     public Text StaminaItemCountTextUI;
     public Text BulletItemCountTextUI;
-
-    public GameObject HealthItemPrefab;
-    public GameObject StaminaItemPrefab;
-    public GameObject BulletItemPrefab;
     
     private void Awake()
     {
@@ -82,18 +78,5 @@ public class ItemManager : MonoBehaviour
         HealthItemCountTextUI.text = $"x{GetItemCount(ItemType.Health)}";
         StaminaItemCountTextUI.text = $"x{GetItemCount(ItemType.Stamina)}";
         BulletItemCountTextUI.text = $"x{GetItemCount(ItemType.Bullet)}";
-    }
-    // 몬스터 죽을 때 아이템 드랍
-    public void DropItem(ItemType itemType)
-    {
-        for (int i = 0; i < ItemList.Count; i++)
-        {
-            if (ItemList[i].ItemType == itemType)
-            {
-                // 아이템 생성
-
-                break;
-            }
-        }
     }
 }

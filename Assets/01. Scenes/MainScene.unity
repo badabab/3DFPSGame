@@ -1947,6 +1947,7 @@ GameObject:
   m_Component:
   - component: {fileID: 753278740}
   - component: {fileID: 753278739}
+  - component: {fileID: 753278741}
   m_Layer: 0
   m_Name: ItemManager
   m_TagString: Untagged
@@ -1969,9 +1970,6 @@ MonoBehaviour:
   HealthItemCountTextUI: {fileID: 1652319673}
   StaminaItemCountTextUI: {fileID: 385005501}
   BulletItemCountTextUI: {fileID: 358841845}
-  HealthItemPrefab: {fileID: 0}
-  StaminaItemPrefab: {fileID: 0}
-  BulletItemPrefab: {fileID: 0}
 --- !u!4 &753278740
 Transform:
   m_ObjectHideFlags: 0
@@ -1987,6 +1985,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &753278741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753278738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a0f9e20ad3523449240dbf33aeae4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthItemPrefab: {fileID: 4871666284723307499, guid: 273bbd5807ca89c498140e573e8d5511, type: 3}
+  StaminaItemPrefab: {fileID: 7548805121393496897, guid: 4e8cdf4d121c3f04a990bfa583dfca20, type: 3}
+  BulletItemPrefab: {fileID: 1856875472464475417, guid: e0adae5aea6629b4c97aed0b3aab83de, type: 3}
+  PoolSize: 10
 --- !u!1 &756484100
 GameObject:
   m_ObjectHideFlags: 0
