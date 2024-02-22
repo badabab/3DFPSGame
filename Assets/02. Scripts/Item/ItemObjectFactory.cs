@@ -19,12 +19,10 @@ public class ItemObjectFactory : MonoBehaviour
 {
     public static ItemObjectFactory Instance { get; private set; }
 
-    public GameObject HealthItemPrefab;
-    public GameObject StaminaItemPrefab;
-    public GameObject BulletItemPrefab;
+    public List<GameObject> ItemPrefabs;
 
+    private List<ItemObject> _itemPool;
     public int PoolSize = 10;
-    private List<GameObject> _itemPool = null;
 
     private void Awake()
     {
@@ -39,26 +37,34 @@ public class ItemObjectFactory : MonoBehaviour
         }
 
         // 아이템 오브젝트풀링
-        _itemPool = new List<GameObject>();
+        _itemPool = new List<ItemObject>();
         for (int i = 0; i < PoolSize; i++)
         {
-            GameObject healthItem = Instantiate(HealthItemPrefab); 
-            _itemPool.Add(healthItem);
-            healthItem.SetActive(false);
-
-            GameObject staminaItem = Instantiate(StaminaItemPrefab);
-            _itemPool.Add(staminaItem);
-            staminaItem.SetActive(false);
-
-            GameObject bulletItem = Instantiate(BulletItemPrefab);
-            _itemPool.Add(bulletItem);
-            bulletItem.SetActive(false);
+            foreach (GameObject prefab in ItemPrefabs) // 3개
+            {
+                GameObject item = Instantiate(prefab);
+                item.transform.SetParent(this.transform);
+                _itemPool.Add(item.GetComponent<ItemObject>());
+                item.SetActive(false);
+            }
         }
+    }
+    private ItemObject Get(ItemType itemType) // 창고 뒤지기
+    {
+        foreach (ItemObject itemObject in _itemPool) // 창고를 뒤진다.
+        {
+            if (itemObject.gameObject.activeSelf == false
+                && itemObject.ItemType == itemType)
+            {
+                return itemObject;
+            }
+        }
+        return null;
     }
 
     public void MakePercent(Vector3 position)
     {
-        int percentage = Random.Range(0, 100);
+        int percentage = UnityEngine.Random.Range(0, 100);
         if (percentage <= 20)
         {
             Make(ItemType.Health, position);
@@ -75,54 +81,12 @@ public class ItemObjectFactory : MonoBehaviour
 
     public void Make(ItemType itemType, Vector3 position)
     {
-        GameObject gameObject = null;
-       
-        switch (itemType)
+        ItemObject itemObject = Get(itemType);
+
+        if (itemObject != null)
         {
-            case ItemType.Health:
-            {
-                //gameObject = Instantiate(HealthItemPrefab);
-                foreach (GameObject i in _itemPool)
-                {
-                    var itemComponent = i.GetComponent<ItemObject>();
-                    if (itemComponent != null && itemComponent.ItemType == ItemType.Health)
-                    {
-                        gameObject = i;
-                    }
-                }
-                break;
-            }
-            case ItemType.Stamina:
-            {
-                //gameObject = Instantiate(StaminaItemPrefab);
-                foreach (GameObject i in _itemPool)
-                {
-                    var itemComponent = i.GetComponent<ItemObject>();
-                    if (itemComponent != null && itemComponent.ItemType == ItemType.Stamina)
-                    {
-                        gameObject = i;
-                    }
-                }
-                break;
-            }
-            case ItemType.Bullet:
-            {
-                //gameObject = Instantiate(BulletItemPrefab);
-                foreach (GameObject i in _itemPool)
-                {
-                    var itemComponent = i.GetComponent<ItemObject>();
-                    if (itemComponent != null && itemComponent.ItemType == ItemType.Bullet)
-                    {
-                        gameObject = i;
-                    }
-                }
-                break;
-            }
-        }
-        if (gameObject != null)
-        {
-            gameObject.transform.position = position;
-            gameObject.SetActive(true);
+            itemObject.transform.position = position;
+            itemObject.gameObject.SetActive(true);
         }
     }
 }
