@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum ItemState
+{
+    Idle,   // 대기상타
+    Fly     // 날아오는 상태
+}
+
 public class ItemObject : MonoBehaviour
 {
     public ItemType ItemType;
@@ -12,20 +18,62 @@ public class ItemObject : MonoBehaviour
     // 몬스터가 죽으면 아이템이 드랍(Health: 20%, Stamina: 20%, Bullet: 10%)
     // 일정거리가 되면 아이템이 베지어 곡선으로 날아오게 하기(중간점을 플레이어와 아이템 사이 랜덤 지정)
 
-    //public float ItemRadius = 3;    // 아이템 먹는 범위
+    private Transform _target;    // 플레이어
+    public float ItemDistance = 3;    // 아이템 인식 거리
+    private Vector3 _itemStartPosition;
+    public float ItemDuration = 0.5f;
+    private float _itemProgress = 0f;
+
+    private ItemState _itemState = ItemState.Idle;
+
+    private void Start()
+    {
+        _target = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+    private void Update()
+    {
+         switch (_itemState)
+         {
+            case ItemState.Idle:
+                Idle(); break;
+                
+            case ItemState.Fly:
+                Fly(); break;
+         }
+    }
+
+    private void Idle()
+    {
+        if (Vector3.Distance(_target.position, transform.position) < ItemDistance)
+        {
+            _itemState = ItemState.Fly;
+        }
+    }
+    private void Fly()
+    {
+        if (_itemProgress == 0)
+        {
+            _itemStartPosition = transform.position;
+        }
+        _itemProgress += Time.deltaTime / ItemDuration;
+
+        transform.position = Vector3.Slerp(_itemStartPosition, _target.position, _itemProgress);
+        if (_itemProgress > 1)
+        {
+            _itemProgress = 0;
+        }
+    }
 
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Player"))
         {
             // 플레이어와 나의 거리를 알고 싶다
-            float distance = Vector3.Distance(collider.transform.position, transform.position);
-            Debug.Log(distance);
+            //float distance = Vector3.Distance(collider.transform.position, transform.position);
 
             // 아이템 매니저(인벤토리)에 추가
             ItemManager.Instance.AddItem(ItemType);
             ItemManager.Instance.RefreshUI();
-            //Destroy(gameObject);
             gameObject.SetActive(false);
         }
     }
