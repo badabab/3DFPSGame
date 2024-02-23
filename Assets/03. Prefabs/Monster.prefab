@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 5687692133096970919}
   - component: {fileID: 1028158045280891206}
   - component: {fileID: -1954725079780591427}
+  - component: {fileID: 2225573425671072948}
   m_Layer: 8
   m_Name: Monster
   m_TagString: Monster
@@ -303,13 +304,12 @@ MonoBehaviour:
   Health: 100
   MaxHealth: 100
   HealthSliderUI: {fileID: 5139517666310062457}
-  MoveSpeed: 3
   FindDistance: 5
   AttackDistance: 2
+  MoveSpeed: 3
   StartPosition: {x: 0, y: 0, z: 0}
   MoveDistance: 40
   Damage: 10
-  AttackCoolTime: 1
   KnockbackPower: 0.5
 --- !u!143 &-1954725079780591427
 CharacterController:
@@ -337,6 +337,28 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!195 &2225573425671072948
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3969732176217481136}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &4874497736327498275
 GameObject:
   m_ObjectHideFlags: 0

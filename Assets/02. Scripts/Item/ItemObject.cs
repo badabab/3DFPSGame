@@ -12,6 +12,7 @@ public enum ItemState
 public class ItemObject : MonoBehaviour
 {
     public ItemType ItemType;
+    private ItemState _itemState = ItemState.Idle;
 
     // Todo 1. 아이템 프리팹을 3개(Health, Stamina, Bullet) 만든다. (도형이나 색깔 다르게해서 구별되게)
     // Todo 2. 플레이어와 일정 거리가 되면 아이템이 먹어지고(AddItem) 사라진다(Destroy). (collider)
@@ -24,12 +25,11 @@ public class ItemObject : MonoBehaviour
     public float ItemDuration = 0.6f;
     private float _itemProgress = 0f;
 
-    private ItemState _itemState = ItemState.Idle;
+    private Coroutine _traceCoroutine;
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        _itemStartPosition = transform.position;
     }
     private void Update()
     {
@@ -43,6 +43,14 @@ public class ItemObject : MonoBehaviour
          }
     }
 
+    public void Init()
+    {
+        _itemStartPosition = transform.position;
+        _itemProgress = 0f;
+        _traceCoroutine = null;
+        _itemState = ItemState.Idle;
+    }
+
     private void Idle()
     {
         float distance = Vector3.Distance(_player.position, transform.position);
@@ -53,28 +61,26 @@ public class ItemObject : MonoBehaviour
     }
     private void Trace()
     {
+        _traceCoroutine = StartCoroutine(Trace_Coroutine());
         // 거리가 가까워지면 Slerp로 날아온다
-        _itemProgress += Time.deltaTime / ItemDuration;
-        transform.position = Vector3.Slerp(_itemStartPosition, _player.position, _itemProgress);
-        if (_itemProgress > 0.6)
+        if (_traceCoroutine != null)
         {
-            ItemManager.Instance.AddItem(ItemType);
-            ItemManager.Instance.RefreshUI();
-            gameObject.SetActive(false);
+            
         }
     }
 
-    /*private void OnTriggerEnter(Collider collider)
+    private IEnumerator Trace_Coroutine()
     {
-        if (collider.CompareTag("Player"))
+        while (_itemProgress < ItemDuration)
         {
-            // 플레이어와 나의 거리를 알고 싶다
-            //float distance = Vector3.Distance(collider.transform.position, transform.position);
+            _itemProgress += Time.deltaTime / ItemDuration;
+            transform.position = Vector3.Slerp(_itemStartPosition, _player.position, _itemProgress);
 
-            // 아이템 매니저(인벤토리)에 추가
-            ItemManager.Instance.AddItem(ItemType);
-            ItemManager.Instance.RefreshUI();
-            gameObject.SetActive(false);
+            yield return null;
         }
-    }*/
+
+        ItemManager.Instance.AddItem(ItemType);
+        ItemManager.Instance.RefreshUI();
+        gameObject.SetActive(false);
+    }
 }
