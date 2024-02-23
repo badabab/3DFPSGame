@@ -5,8 +5,8 @@ using UnityEngine;
 
 public enum ItemState
 {
-    Idle,   // 대기상타
-    Fly     // 날아오는 상태
+    Idle,   // 대기상태
+    Trace     // 날아오는 상태
 }
 
 public class ItemObject : MonoBehaviour
@@ -18,17 +18,18 @@ public class ItemObject : MonoBehaviour
     // 몬스터가 죽으면 아이템이 드랍(Health: 20%, Stamina: 20%, Bullet: 10%)
     // 일정거리가 되면 아이템이 베지어 곡선으로 날아오게 하기(중간점을 플레이어와 아이템 사이 랜덤 지정)
 
-    private Transform _target;    // 플레이어
-    public float ItemDistance = 3;    // 아이템 인식 거리
+    private Transform _player;    // 플레이어, _itemEndPosition
+    public float ItemDistance = 5;    // 아이템 인식 거리
     private Vector3 _itemStartPosition;
-    public float ItemDuration = 0.5f;
+    public float ItemDuration = 0.6f;
     private float _itemProgress = 0f;
 
     private ItemState _itemState = ItemState.Idle;
 
     private void Start()
     {
-        _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _itemStartPosition = transform.position;
     }
     private void Update()
     {
@@ -37,34 +38,33 @@ public class ItemObject : MonoBehaviour
             case ItemState.Idle:
                 Idle(); break;
                 
-            case ItemState.Fly:
-                Fly(); break;
+            case ItemState.Trace:
+                Trace(); break;
          }
     }
 
     private void Idle()
     {
-        if (Vector3.Distance(_target.position, transform.position) < ItemDistance)
+        float distance = Vector3.Distance(_player.position, transform.position);
+        if (distance <= ItemDistance)
         {
-            _itemState = ItemState.Fly;
+            _itemState = ItemState.Trace;
         }
     }
-    private void Fly()
+    private void Trace()
     {
-        if (_itemProgress == 0)
-        {
-            _itemStartPosition = transform.position;
-        }
+        // 거리가 가까워지면 Slerp로 날아온다
         _itemProgress += Time.deltaTime / ItemDuration;
-
-        transform.position = Vector3.Slerp(_itemStartPosition, _target.position, _itemProgress);
-        if (_itemProgress > 1)
+        transform.position = Vector3.Slerp(_itemStartPosition, _player.position, _itemProgress);
+        if (_itemProgress > 0.6)
         {
-            _itemProgress = 0;
+            ItemManager.Instance.AddItem(ItemType);
+            ItemManager.Instance.RefreshUI();
+            gameObject.SetActive(false);
         }
     }
 
-    private void OnTriggerEnter(Collider collider)
+    /*private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Player"))
         {
@@ -76,5 +76,5 @@ public class ItemObject : MonoBehaviour
             ItemManager.Instance.RefreshUI();
             gameObject.SetActive(false);
         }
-    }
+    }*/
 }

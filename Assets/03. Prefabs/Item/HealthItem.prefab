@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3091121503290089060}
   - component: {fileID: -936944016902762332}
   - component: {fileID: 5653978893145617720}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: HealthItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,5 +147,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemType: 0
-  ItemDistance: 3
-  ItemDuration: 0.5
+  ItemDistance: 5
+  ItemDuration: 0.6

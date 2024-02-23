@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4475014329322186910}
   - component: {fileID: 3872941177403423155}
   - component: {fileID: -7491296278327771765}
-  m_Layer: 2
+  m_Layer: 11
   m_Name: StaminaItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,5 +147,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemType: 1
-  ItemDistance: 3
-  ItemDuration: 0.5
+  ItemDistance: 5
+  ItemDuration: 0.6
