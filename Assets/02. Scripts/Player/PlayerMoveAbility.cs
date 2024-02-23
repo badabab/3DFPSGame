@@ -19,6 +19,9 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
     [Header("스태미나 슬라이더 UI")]
     public Slider StaminaSliderUI;
 
+    public Image HitEffectImageUI;
+    public float HitEffectDelay = 0.3f;
+
     private CharacterController _characterController;
 
     // 목표: 스페이스바를 누르면 캐릭터를 점프하고 싶다.
@@ -141,6 +144,10 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
         // 점프 구현   
         if (_characterController.isGrounded) // 땅일 때
         {
+            if (_yVelocity < -10)
+            {
+                Hit(10 * (int)(_yVelocity / -10f));
+            }
             _isJumping = false;
             _isClimbing = false;
             _yVelocity = 0;
@@ -175,10 +182,17 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
     }
     public void Hit(int damage)
     {
+        StartCoroutine(HitEffect_Coroutine(HitEffectDelay));
         Health -= damage;
         if (Health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+    private IEnumerator HitEffect_Coroutine(float delay)
+    {
+        HitEffectImageUI.gameObject.SetActive(true);
+        yield return new WaitForSeconds(delay);
+       HitEffectImageUI.gameObject.SetActive(false);
     }
 }

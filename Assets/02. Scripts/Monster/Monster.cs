@@ -59,7 +59,6 @@ public class Monster : MonoBehaviour, IHitable
         StartPosition = transform.position;
 
         Init();
-        RandomPosition();
     }
 
     public void Init()
@@ -74,7 +73,10 @@ public class Monster : MonoBehaviour, IHitable
         // 상태 패턴: 상태에 따라 행동을 다르게 하는 패턴 
         // 1. 몬스터가 가질 수 있는 행동에 따라 상태를 나눈다.
         // 2. 상태들이 조건에 따라 자연스럽게 전환(Transition)되게 설계한다.
-
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            Debug.Log( gameObject.name+","+_currentState);
+        }
         switch (_currentState)
         {
             case MonsterState.Idle:
@@ -111,6 +113,7 @@ public class Monster : MonoBehaviour, IHitable
         {
             Debug.Log("상태 전환: Idle -> Patrol");
             _currentState = MonsterState.Patrol;
+            RandomPosition();
         }
         if (Vector3.Distance(_target.position, transform.position) <= FindDistance)
         {
@@ -171,6 +174,7 @@ public class Monster : MonoBehaviour, IHitable
         {
             Debug.Log("상태 전환: Comeback -> idle");
             _currentState = MonsterState.Idle;
+            _patrolTimer = 0f;
         }
 
     }
@@ -238,10 +242,10 @@ public class Monster : MonoBehaviour, IHitable
           
         if (Vector3.Distance(transform.position, randomDirection) <= TOLERANCE)
         {
-            RandomPosition();
-            _nevMeshAgent.destination = randomDirection;
-            /*Debug.Log("상태 전환: Patrol -> Comeback");
-            _currentState = MonsterState.Comeback;*/
+            Debug.Log("상태 전환: Patrol -> Comeback");
+            _currentState = MonsterState.Comeback;
+            /*RandomPosition();
+            _nevMeshAgent.destination = randomDirection;*/
         }
         if (Vector3.Distance(_target.position, transform.position) <= FindDistance)
         {
@@ -253,8 +257,8 @@ public class Monster : MonoBehaviour, IHitable
     {
         randomDirection = Random.insideUnitSphere * PatrolRadius;
         randomDirection += StartPosition;
-
-        if (NavMesh.SamplePosition(randomDirection, out _, PatrolRadius, NavMesh.AllAreas))
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomDirection, out hit, PatrolRadius, NavMesh.AllAreas))
         {
             randomDirection.y = 1;
             Debug.Log($"Random position : {randomDirection}");
