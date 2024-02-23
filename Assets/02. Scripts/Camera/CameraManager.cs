@@ -16,6 +16,7 @@ public class CameraManager : MonoBehaviour
 {
     public static CameraManager Instance { get; private set; }
 
+    public CameraShake cameraShake;
     private FPSCamera _FPSCamera;
     private TPSCamera _TPSCamera;
 

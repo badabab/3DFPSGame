@@ -26,13 +26,13 @@ public class TPSCamera : MonoBehaviour
         {
             // 구현 순서:
             // 1. 카메라를 타겟(플레이어에서 조금 떨어진 거리)으로 이동시킨다.(따라다니게 한다.)
-            transform.position = Target.position + Offset;
+            transform.localPosition = Target.position + Offset;
 
             // 2. 플레이어를 쳐다보게 한다.
             // LookAt: Rotates the transform so the forward vector points at target's current position
             transform.LookAt(Target);
 
-            transform.position = Target.position - transform.forward * Offset.magnitude + Vector3.up * (Offset.y - a);
+            transform.localPosition = Target.position - transform.forward * Offset.magnitude + Vector3.up * (Offset.y - a);
         }
         
         // 3. 마우스 입력을 받는다.

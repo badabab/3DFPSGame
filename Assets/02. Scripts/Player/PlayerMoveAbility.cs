@@ -20,7 +20,7 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
     public Slider StaminaSliderUI;
 
     public Image HitEffectImageUI;
-    public float HitEffectDelay = 0.3f;
+    public float HitEffectDelay = 0.2f;
 
     private CharacterController _characterController;
 
@@ -183,10 +183,14 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
     public void Hit(int damage)
     {
         StartCoroutine(HitEffect_Coroutine(HitEffectDelay));
+        CameraManager.Instance.cameraShake.Shake();
         Health -= damage;
         if (Health <= 0)
         {
-            Destroy(gameObject);
+            StopAllCoroutines();
+            Health = 0;
+            gameObject.SetActive(false);
+            //Destroy(gameObject);
         }
     }
     private IEnumerator HitEffect_Coroutine(float delay)
