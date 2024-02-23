@@ -11,7 +11,8 @@ public enum MonsterState // 몬스터의 상태
     Attack,         // 공격
     Comeback,       // 복귀
     Damaged,        // 공격 당함
-    Die             // 사망
+    Die,            // 사망
+    Patrol          // 순찰
 }
 
 public class Monster : MonoBehaviour, IHitable
@@ -35,6 +36,10 @@ public class Monster : MonoBehaviour, IHitable
     public int Damage = 10;
     public const float AttackDelay = 1f;
     private float _attackTimer = 0f;
+    public float PatrolTime = 3f;
+    private float _patrolTimer = 0f;
+    public float PatrolRadius = 30f;
+    Vector3 randomDirection;
 
     private Vector3 _knockbackStartPosition;
     private Vector3 _knockbackEndPosition;
@@ -54,6 +59,7 @@ public class Monster : MonoBehaviour, IHitable
         StartPosition = transform.position;
 
         Init();
+        RandomPosition();
     }
 
     public void Init()
@@ -90,19 +96,28 @@ public class Monster : MonoBehaviour, IHitable
             case MonsterState.Damaged:
                 Damaged();
                 break;
+
+            case MonsterState.Patrol:
+                Patrol();
+                break;
         }
     }
 
     private void Idle()
     {
         // todo: 몬스터의 Idle 애니메이션 재생
+        _patrolTimer += Time.deltaTime;
+        if (_patrolTimer > PatrolTime)
+        {
+            Debug.Log("상태 전환: Idle -> Patrol");
+            _currentState = MonsterState.Patrol;
+        }
         if (Vector3.Distance(_target.position, transform.position) <= FindDistance)
         {
             Debug.Log("상태 전환: Idle -> Trace");
             _currentState = MonsterState.Trace;
-        }
+        }       
     }
-
     private void Trace()
     {
         // Trace 상태일때의 행동 코드를 작성
@@ -134,7 +149,6 @@ public class Monster : MonoBehaviour, IHitable
             _currentState = MonsterState.Attack;
         }
     }
-
     private void Comeback()
     {
         // 실습 과제 34. 복귀 상태의 행동 구현하기:
@@ -160,7 +174,6 @@ public class Monster : MonoBehaviour, IHitable
         }
 
     }
-
     private void Attack()
     {
         // 전이 사건: 플레이어와 거리가 공격 범위보다 멀어지면 다시 Trace
@@ -186,7 +199,6 @@ public class Monster : MonoBehaviour, IHitable
         }
 
     }
-
     private void Damaged()
     {
         // 1. Damage 애니메이션 실행(0.5초)
@@ -216,6 +228,36 @@ public class Monster : MonoBehaviour, IHitable
 
             Debug.Log("상태 전환: Damaged -> Trace");
             _currentState = MonsterState.Trace;
+        }
+    }
+    private void Patrol()
+    {
+        // 특정 지점으로 순찰을 간다.
+        _nevMeshAgent.stoppingDistance = TOLERANCE;
+        _nevMeshAgent.destination = randomDirection;
+          
+        if (Vector3.Distance(transform.position, randomDirection) <= TOLERANCE)
+        {
+            RandomPosition();
+            _nevMeshAgent.destination = randomDirection;
+            /*Debug.Log("상태 전환: Patrol -> Comeback");
+            _currentState = MonsterState.Comeback;*/
+        }
+        if (Vector3.Distance(_target.position, transform.position) <= FindDistance)
+        {
+            Debug.Log("상태 전환: Patrol -> Trace");
+            _currentState = MonsterState.Trace;
+        }
+    }
+    public void RandomPosition()
+    {
+        randomDirection = Random.insideUnitSphere * PatrolRadius;
+        randomDirection += StartPosition;
+
+        if (NavMesh.SamplePosition(randomDirection, out _, PatrolRadius, NavMesh.AllAreas))
+        {
+            randomDirection.y = 1;
+            Debug.Log($"Random position : {randomDirection}");
         }
     }
 

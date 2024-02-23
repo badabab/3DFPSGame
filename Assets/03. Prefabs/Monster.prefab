@@ -310,6 +310,8 @@ MonoBehaviour:
   StartPosition: {x: 0, y: 0, z: 0}
   MoveDistance: 40
   Damage: 10
+  PatrolTime: 3
+  PatrolRadius: 30
   KnockbackPower: 0.5
 --- !u!143 &-1954725079780591427
 CharacterController:
