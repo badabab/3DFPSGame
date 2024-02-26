@@ -16,21 +16,24 @@ public class MinimapCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 targetPosition = Target.position;
-        targetPosition.y += YDistance;
-        transform.position = targetPosition;
-
-        Vector3 targetEulerAngles = Target.eulerAngles;
-        targetEulerAngles.x = _initalEulerAngles.x;
-        targetEulerAngles.z = _initalEulerAngles.z;
-        transform.eulerAngles = targetEulerAngles;
-
-        // ESC누르면 화면 고정 On/Off
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if(GameManager.Instance.State == GameState.Go)
         {
-            isLock = !isLock;
-        }
-        if(isLock)
-            transform.rotation = Quaternion.Euler(90,0,0) ;
+            Vector3 targetPosition = Target.position;
+            targetPosition.y += YDistance;
+            transform.position = targetPosition;
+
+            Vector3 targetEulerAngles = Target.eulerAngles;
+            targetEulerAngles.x = _initalEulerAngles.x;
+            targetEulerAngles.z = _initalEulerAngles.z;
+            transform.eulerAngles = targetEulerAngles;
+
+            // ESC누르면 화면 고정 On/Off
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isLock = !isLock;
+            }
+            if (isLock)
+                transform.rotation = Quaternion.Euler(90, 0, 0);
+        }      
     }
 }

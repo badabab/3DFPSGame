@@ -6,19 +6,22 @@ public class PlayerItemUseAbility : MonoBehaviour
 {
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))    // HealthItem
-        {  
-            ItemManager.Instance.TryUseItem(ItemType.Health);
-        }
-        else if (Input.GetKeyDown(KeyCode.Y))   // StaminaItem
+        if (GameManager.Instance.State == GameState.Go)
         {
-            ItemManager.Instance.TryUseItem(ItemType.Stamina);
-        }
-        else if (Input.GetKeyDown(KeyCode.U))   // BulletItem
-        {
-            ItemManager.Instance.TryUseItem(ItemType.Bullet);
-        }
+            if (Input.GetKeyDown(KeyCode.T))    // HealthItem
+            {
+                ItemManager.Instance.TryUseItem(ItemType.Health);
+            }
+            else if (Input.GetKeyDown(KeyCode.Y))   // StaminaItem
+            {
+                ItemManager.Instance.TryUseItem(ItemType.Stamina);
+            }
+            else if (Input.GetKeyDown(KeyCode.U))   // BulletItem
+            {
+                ItemManager.Instance.TryUseItem(ItemType.Bullet);
+            }
 
-        ItemManager.Instance.RefreshUI();
+            ItemManager.Instance.RefreshUI();
+        }      
     }
 }

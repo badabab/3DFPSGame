@@ -68,41 +68,44 @@ public class Monster : MonoBehaviour, IHitable
 
     private void Update()
     {
-        HealthSliderUI.value = (float)Health / (float)MaxHealth;  // 0 ~ 1
-
-        // 상태 패턴: 상태에 따라 행동을 다르게 하는 패턴 
-        // 1. 몬스터가 가질 수 있는 행동에 따라 상태를 나눈다.
-        // 2. 상태들이 조건에 따라 자연스럽게 전환(Transition)되게 설계한다.
-        if(Input.GetKeyDown(KeyCode.Tab))
+        if (GameManager.Instance.State == GameState.Go)
         {
-            Debug.Log( gameObject.name+","+_currentState);
-        }
-        switch (_currentState)
-        {
-            case MonsterState.Idle:
-                Idle();
-                break;
+            HealthSliderUI.value = (float)Health / (float)MaxHealth;  // 0 ~ 1
 
-            case MonsterState.Trace:
-                Trace();
-                break;
+            // 상태 패턴: 상태에 따라 행동을 다르게 하는 패턴 
+            // 1. 몬스터가 가질 수 있는 행동에 따라 상태를 나눈다.
+            // 2. 상태들이 조건에 따라 자연스럽게 전환(Transition)되게 설계한다.
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                Debug.Log(gameObject.name + "," + _currentState);
+            }
+            switch (_currentState)
+            {
+                case MonsterState.Idle:
+                    Idle();
+                    break;
 
-            case MonsterState.Comeback:
-                Comeback();
-                break;
+                case MonsterState.Trace:
+                    Trace();
+                    break;
 
-            case MonsterState.Attack:
-                Attack();
-                break;
+                case MonsterState.Comeback:
+                    Comeback();
+                    break;
 
-            case MonsterState.Damaged:
-                Damaged();
-                break;
+                case MonsterState.Attack:
+                    Attack();
+                    break;
 
-            case MonsterState.Patrol:
-                Patrol();
-                break;
-        }
+                case MonsterState.Damaged:
+                    Damaged();
+                    break;
+
+                case MonsterState.Patrol:
+                    Patrol();
+                    break;
+            }
+        }      
     }
 
     private void Idle()
