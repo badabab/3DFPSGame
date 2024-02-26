@@ -191,6 +191,9 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
             Health = 0;
             gameObject.SetActive(false);
             //Destroy(gameObject);
+
+            GameManager.Instance.GameOver();
+            Debug.Log(GameManager.Instance.State);
         }
     }
     private IEnumerator HitEffect_Coroutine(float delay)
