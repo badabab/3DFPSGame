@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,7 @@ public class PlayerBombFireAbility : MonoBehaviour
     public int MaxBombCount = 3; // 최대폭탄 개수
 
     [Header("수류탄 개수 UI")]
-    public Text BombCountUI;
+    public TextMeshProUGUI BombCountUI;
 
     // 수류탄 오브젝트 풀링
     public int PoolSize = 3;

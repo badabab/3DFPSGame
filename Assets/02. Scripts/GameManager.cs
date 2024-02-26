@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +20,7 @@ public class GameManager : MonoBehaviour
     // 게임의 상태는 처음에 "준비" 상태
     public GameState State { get; private set; } = GameState.Ready;
 
-    public Text StateTextUI;
+    public TextMeshProUGUI StateTextUI;
 
     private void Awake()
     {
@@ -69,8 +70,8 @@ public class GameManager : MonoBehaviour
             case GameState.Ready:
             {
                 //StateTextUI.color = Color.cyan;
-                StateTextUI.color = new Color(90f/255f, 45f/255f, 200f/255f, 1f);
-                //StateTextUI.color = new Color32(90, 45, 200, 255);
+                StateTextUI.color = new Color(100f/255f, 100f/255f, 255f/255f, 1f);
+                //StateTextUI.color = new Color32(100, 100, 255, 255);
 
                 StateTextUI.text = "Ready...";
                 break;

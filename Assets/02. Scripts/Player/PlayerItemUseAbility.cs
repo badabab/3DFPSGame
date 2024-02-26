@@ -21,7 +21,8 @@ public class PlayerItemUseAbility : MonoBehaviour
                 ItemManager.Instance.TryUseItem(ItemType.Bullet);
             }
 
-            ItemManager.Instance.RefreshUI();
+            //ItemManager.Instance.RefreshUI();
+            ItemManager.Instance.OnDataChanged.Invoke();
         }      
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,7 +29,7 @@ public class PlayerGunFireAbility : MonoBehaviour
 
 
     // - 총알 개수 텍스트 UI
-    public Text BulletTextUI;
+    public TextMeshProUGUI BulletTextUI;
     public Image ProfileImageUI;
     public GameObject CrosshairUI;
     public GameObject CorsshairZoomUI;
