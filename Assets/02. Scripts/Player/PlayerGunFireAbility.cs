@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class PlayerGunFireAbility : MonoBehaviour
 {
+    private Animator _animator;
+
     public Gun CurrentGun;    // 현재 들고있는 총
     public List<Gun> GunInventory;
     private int _currentGunIndex;
@@ -42,6 +44,7 @@ public class PlayerGunFireAbility : MonoBehaviour
         RefreshUI();
         RefreshGun();
         _currentGunIndex = 0;
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -120,6 +123,7 @@ public class PlayerGunFireAbility : MonoBehaviour
                     // 6. 이펙트가 쳐다보는 방향을 부딛힌 위치의 법선 벡터로 한다.
                     HitEffect.gameObject.transform.forward = hitInfo.normal;
                     HitEffect.Play();
+                    _animator.SetTrigger("Shoot");
                 }
             }
 

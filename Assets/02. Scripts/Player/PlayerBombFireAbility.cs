@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerBombFireAbility : MonoBehaviour
 {
+    private Animator _animator;
+
     // 목표: 마우스 오른쪽 버튼을 누르면 시선이 바라보는 방향으로 수류탄을 던지고 싶다.
     // 필요 속성
     // - 수류탄 프리팹
@@ -29,6 +31,7 @@ public class PlayerBombFireAbility : MonoBehaviour
 
     private void Awake()
     {
+        _animator = GetComponentInChildren<Animator>();
         _bombCount = MaxBombCount;
         RefreshUI();
 
@@ -52,6 +55,8 @@ public class PlayerBombFireAbility : MonoBehaviour
             // 1. 마우스 오른쪽 버튼을 감지
             if (Input.GetMouseButtonDown(1) && _bombCount > 0) // 우측버튼 1번
             {
+                _animator.SetTrigger("Throw");
+
                 // 2. 수류탄 던지는 위치에다가 수류탄 생성
                 //GameObject bomb = Instantiate(BombPrefab);
                 _bombCount--;
