@@ -10,7 +10,7 @@ using UnityEngine.UI;
 // 데이터 관리 -> 데이터를 생성, 수정, 삭제, 조회(검색) // CRUDF
 public class ItemManager : MonoBehaviour
 {
-    public UnityEvent OnDataChanged;
+    //public UnityEvent OnDataChanged;
     // 관찰자(유튜버) 패턴
     // 구독자가 구독하고 있는 유튜버의 상태가 변화할 때마다
     // 유튜버는 구독자에게 이벤트를 통지하고, 구독자들은 이벤트 알림을 받아
@@ -30,6 +30,10 @@ public class ItemManager : MonoBehaviour
         }        
     }
 
+    public TextMeshProUGUI HealthItemCountTextUI;
+    public TextMeshProUGUI StaminaItemCountTextUI;
+    public TextMeshProUGUI BulletItemCountTextUI;
+
     public List<Item> ItemList = new List<Item>();
     private void Start()
     {
@@ -37,8 +41,8 @@ public class ItemManager : MonoBehaviour
         ItemList.Add(new Item(ItemType.Stamina, 5));    // 1: Stamina
         ItemList.Add(new Item(ItemType.Bullet, 7));     // 2: Bullet
 
-        //RefreshUI();
-        OnDataChanged?.Invoke();
+        RefreshUI();
+        //OnDataChanged?.Invoke();
     }
 
     // 1. 아이템 추가(생성)
@@ -49,6 +53,8 @@ public class ItemManager : MonoBehaviour
             if (ItemList[i].ItemType == itemType)
             {
                 ItemList[i].Count++;
+                //RefreshUI();
+                //OnDataChanged?.Invoke();
                 break;
             }
         }
@@ -60,6 +66,8 @@ public class ItemManager : MonoBehaviour
         {
             if (ItemList[i].ItemType == itemType)
             {
+                //RefreshUI();
+                //OnDataChanged?.Invoke();
                 return ItemList[i].Count;   
             }
         }
@@ -72,10 +80,19 @@ public class ItemManager : MonoBehaviour
         {
             if (ItemList[i].ItemType == itemType)
             {
-                return ItemList[i].TryUse();
+                bool result = ItemList[i].TryUse();
+                //RefreshUI();
+                //OnDataChanged?.Invoke();
+                return result;
             }
         }
         return false;
     }
-    
+
+    public void RefreshUI()
+    {
+        HealthItemCountTextUI.text = $"x{ItemManager.Instance.GetItemCount(ItemType.Health)}";
+        StaminaItemCountTextUI.text = $"x{ItemManager.Instance.GetItemCount(ItemType.Stamina)}";
+        BulletItemCountTextUI.text = $"x{ItemManager.Instance.GetItemCount(ItemType.Bullet)}";
+    }
 }

@@ -2097,7 +2097,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2457,6 +2457,7 @@ GameObject:
   - component: {fileID: 747617578}
   - component: {fileID: 747617580}
   - component: {fileID: 747617579}
+  - component: {fileID: 747617581}
   m_Layer: 5
   m_Name: UI_Inventory
   m_TagString: Untagged
@@ -2530,6 +2531,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 747617577}
   m_CullTransparentMesh: 1
+--- !u!114 &747617581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747617577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db96ef305358a81479b12efa51f431c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthItemCountTextUI: {fileID: 207692817}
+  StaminaItemCountTextUI: {fileID: 2107785860}
+  BulletItemCountTextUI: {fileID: 241059980}
 --- !u!1 &753278738
 GameObject:
   m_ObjectHideFlags: 0
@@ -2559,9 +2575,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e51299c14fb8449932dc3d8cd2f89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthItemCountTextUI: {fileID: 207692817}
-  StaminaItemCountTextUI: {fileID: 2107785860}
-  BulletItemCountTextUI: {fileID: 241059980}
+  OnDataChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &753278740
 Transform:
   m_ObjectHideFlags: 0
@@ -5318,7 +5334,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -5995,7 +6011,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -7076,13 +7092,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 220
-  m_fontSizeBase: 220
+  m_fontSize: 160
+  m_fontSizeBase: 160
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

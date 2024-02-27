@@ -81,7 +81,7 @@ public class ItemObject : MonoBehaviour
 
         ItemManager.Instance.AddItem(ItemType);
         //ItemManager.Instance.RefreshUI();
-        ItemManager.Instance.OnDataChanged.Invoke();
+        //ItemManager.Instance.OnDataChanged.Invoke();
         gameObject.SetActive(false);
     }
 }

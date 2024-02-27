@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class UI_ItemInventory : MonoBehaviour
 {
-
-
     public TextMeshProUGUI HealthItemCountTextUI;
     public TextMeshProUGUI StaminaItemCountTextUI;
     public TextMeshProUGUI BulletItemCountTextUI;
