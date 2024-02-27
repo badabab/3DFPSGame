@@ -107,6 +107,10 @@ public class Monster : MonoBehaviour, IHitable
                 case MonsterState.Patrol:
                     Patrol();
                     break;
+
+                case MonsterState.Die:
+                    Die(); 
+                    break;
             }
         }      
     }
@@ -187,7 +191,12 @@ public class Monster : MonoBehaviour, IHitable
             _currentState = MonsterState.Idle;
             _patrolTimer = 0f;
         }
-
+        if (Vector3.Distance(_target.position, transform.position) <= FindDistance)
+        {
+            Debug.Log("상태 전환: Comeback -> Trace");
+            _animator.SetTrigger("ComebackToTrace");
+            _currentState = MonsterState.Trace;
+        }
     }
     private void Attack()
     {
@@ -286,10 +295,20 @@ public class Monster : MonoBehaviour, IHitable
 
     public void Hit(int damage)
     {
+        if (_currentState == MonsterState.Die)
+        {
+            return;
+        }
         Health -= damage;
         if (Health <= 0)
         {
-            Die();
+            Debug.Log("상태 전환: Any -> Die");
+
+            // Die 애니메이션 확률
+            int num = Random.Range(0, 2);
+            _animator.SetTrigger(num == 0 ? "Die1" : "Die2");
+
+            _currentState = MonsterState.Die;
         }
         else
         {
@@ -298,12 +317,24 @@ public class Monster : MonoBehaviour, IHitable
         }
     }
 
+    private Coroutine _dieCoroutine;
     private void Die()
     {
+        // 매 프레임마다 해야 할 행동을 추가
 
+        if (_dieCoroutine == null)
+        {
+            _dieCoroutine = StartCoroutine(Die_Coroutine());
+        }      
+    }
+    private IEnumerator Die_Coroutine()
+    {
+        _nevMeshAgent.isStopped = true;
+        _nevMeshAgent.ResetPath();
+        HealthSliderUI.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1f);
         // 죽을때 아이템 생성
         ItemObjectFactory.Instance.MakePercent(transform.position);
-
         Destroy(gameObject);
     }
 }

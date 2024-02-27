@@ -296,7 +296,7 @@ MonoBehaviour:
   MaxHealth: 100
   HealthSliderUI: {fileID: 5139517666310062457}
   FindDistance: 5
-  AttackDistance: 3
+  AttackDistance: 2
   MoveSpeed: 3
   StartPosition: {x: 0, y: 0, z: 0}
   MoveDistance: 40
@@ -670,6 +670,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 63a7c755f3e71d349950d9a298ce3025, type: 2}
+    - target: {fileID: -6057140222963153312, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -5649415677901578671, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
       propertyPath: m_Layer
       value: 8
