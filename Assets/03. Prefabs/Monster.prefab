@@ -296,7 +296,7 @@ MonoBehaviour:
   MaxHealth: 100
   HealthSliderUI: {fileID: 5139517666310062457}
   FindDistance: 5
-  AttackDistance: 2
+  AttackDistance: 3
   MoveSpeed: 3
   StartPosition: {x: 0, y: 0, z: 0}
   MoveDistance: 40
@@ -977,10 +977,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 92472515617555776}
   m_SourcePrefab: {fileID: 100100000, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
 --- !u!4 &5407380317977850467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
   m_PrefabInstance: {fileID: 1040449648795031929}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9030146504879554672 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
+  m_PrefabInstance: {fileID: 1040449648795031929}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &92472515617555776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9030146504879554672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74dc853699ca5774d9f329aec5188222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

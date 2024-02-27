@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -204,21 +205,23 @@ public class Monster : MonoBehaviour, IHitable
         _attackTimer += Time.deltaTime;
         if (_attackTimer >= AttackDelay)
         {
-            IHitable playerHitable = _target.GetComponent<IHitable>();
-            if (playerHitable != null)
-            {
-                Debug.Log("때렸다!");
-                _animator.SetTrigger("Attack");
-                playerHitable.Hit(Damage);
-                _attackTimer = 0f;
-            }
+            _animator.SetTrigger("Attack");
         }
-
+    }
+    public void PlayerAttack()
+    {
+        IHitable playerHitable = _target.GetComponent<IHitable>();
+        if (playerHitable != null)
+        {
+            Debug.Log("때렸다!");
+            playerHitable.Hit(Damage);
+            _attackTimer = 0f;
+        }
     }
     private void Damaged()
     {
         // 1. Damage 애니메이션 실행(0.5초)
-
+        _animator.SetTrigger("Damaged");
         // todo: 애니메이션 실행
 
         // 2. 넉백 구현
@@ -244,6 +247,7 @@ public class Monster : MonoBehaviour, IHitable
             _knockbackProgress = 0f;
 
             Debug.Log("상태 전환: Damaged -> Trace");
+            _animator.SetTrigger("DamagedToTrace");
             _currentState = MonsterState.Trace;
         }
     }
