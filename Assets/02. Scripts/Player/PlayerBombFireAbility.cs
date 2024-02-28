@@ -55,30 +55,33 @@ public class PlayerBombFireAbility : MonoBehaviour
             // 1. 마우스 오른쪽 버튼을 감지
             if (Input.GetMouseButtonDown(1) && _bombCount > 0) // 우측버튼 1번
             {
-                _animator.SetTrigger("Throw");
-
-                // 2. 수류탄 던지는 위치에다가 수류탄 생성
-                //GameObject bomb = Instantiate(BombPrefab);
-                _bombCount--;
-                RefreshUI();
-                GameObject bomb = null;
-                foreach (GameObject b in _bombPool)
-                {
-                    if (b.gameObject.activeInHierarchy == false)
-                    {
-                        bomb = b;
-                        bomb.gameObject.SetActive(true);
-                        break;
-                    }
-                }
-                bomb.transform.position = FirePosition.position;
-
-                // 3. 시선이 바라보는 방향(카메라가 바라보는 방향 = 카메라의 전방)으로 수류탄 투척
-                Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
-                rigidbody.velocity = Vector3.zero;
-                rigidbody.AddForce(Camera.main.transform.forward * ThrowPower, ForceMode.Impulse);
+                _animator.SetTrigger("Throw");              
             }
         }       
+    }
+
+    public void BombThrow()
+    {
+        // 2. 수류탄 던지는 위치에다가 수류탄 생성
+        //GameObject bomb = Instantiate(BombPrefab);
+        _bombCount--;
+        RefreshUI();
+        GameObject bomb = null;
+        foreach (GameObject b in _bombPool)
+        {
+            if (b.gameObject.activeInHierarchy == false)
+            {
+                bomb = b;
+                bomb.gameObject.SetActive(true);
+                break;
+            }
+        }
+        bomb.transform.position = FirePosition.position;
+
+        // 3. 시선이 바라보는 방향(카메라가 바라보는 방향 = 카메라의 전방)으로 수류탄 투척
+        Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce(Camera.main.transform.forward * ThrowPower, ForceMode.Impulse);
     }
 
     private void RefreshUI()
