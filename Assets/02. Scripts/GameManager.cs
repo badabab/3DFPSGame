@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
     }
-        private void Start()
+    private void Start()
     {
         StartCoroutine(Start_Coroutine());
     }
@@ -89,5 +89,10 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void OnOptionButtonClicked()
+    {
+        Debug.Log("옵션 버튼 클릭");
     }
 }

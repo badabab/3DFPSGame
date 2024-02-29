@@ -49,8 +49,6 @@ public class Monster : MonoBehaviour, IHitable
     private float _knockbackProgress = 0f;
     public float KnockbackPower = 1.2f;
 
-    public GameObject BloodPrefab;
-
     private MonsterState _currentState = MonsterState.Idle;
 
     private void Start()
@@ -305,11 +303,9 @@ public class Monster : MonoBehaviour, IHitable
         // Todo. 데미지 타입이 크리티컬이면 피흘리기
         if (damage.DamageType == DamageType.Critical)
         {
-            GameObject bloodObject = Instantiate(BloodPrefab);
-            bloodObject.transform.position = damage.Position;
-            bloodObject.transform.forward = damage.Normal;
+            // 실습 과제 47: 블러드를 팩토리패턴으로 구현하기 (파일 및 클래스명:BloodFactory)
+            BloodFactory.Instance.Make(damage.Position, damage.Normal);
         }
-        // 실습 과제 47: 블러드를 팩토리패턴으로 구현하기 (파일 및 클래스명:BloodFactory)
 
         Health -= damage.Amount;
         if (Health <= 0)
