@@ -304,7 +304,6 @@ MonoBehaviour:
   PatrolTime: 3
   PatrolRadius: 30
   KnockbackPower: 0.5
-  BloodPrefab: {fileID: 3052433706073744361, guid: 129c4a557d692b94a8e8189628520cd2, type: 3}
 --- !u!143 &-1954725079780591427
 CharacterController:
   m_ObjectHideFlags: 0
@@ -671,6 +670,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 63a7c755f3e71d349950d9a298ce3025, type: 2}
+    - target: {fileID: -6057140222963153312, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

@@ -289,7 +289,7 @@ public class Monster : MonoBehaviour, IHitable
         if (NavMesh.SamplePosition(randomDirection, out hit, PatrolRadius, NavMesh.AllAreas))
         {
             randomDirection.y = 1;
-            Debug.Log($"Random position : {randomDirection}");
+            //Debug.Log($"Random position : {randomDirection}");
         }
     }
 
