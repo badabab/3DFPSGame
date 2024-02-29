@@ -152,7 +152,8 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
             {
                 if (_yVelocity < -10)
                 {
-                    Hit(10 * (int)(_yVelocity / -10f));
+                    DamageInfo damageInfo = new DamageInfo(DamageType.Normal, 10 * (int)(_yVelocity / -10f));
+                    Hit(damageInfo);
                 }
                 _isJumping = false;
                 _isClimbing = false;
@@ -188,11 +189,11 @@ public class PlayerMoveAbility : MonoBehaviour, IHitable
             _animator.SetFloat("Move", unNormalizedDir.magnitude);  //magnitude: 벡터의 길이
         }   
     }
-    public void Hit(int damage)
+    public void Hit(DamageInfo damage)
     {
         StartCoroutine(HitEffect_Coroutine(HitEffectDelay));
         CameraManager.Instance.cameraShake.Shake();
-        Health -= damage;
+        Health -= damage.Amount;
 
         _animator.SetLayerWeight(1, 1 - Health / (float)MaxHealth);
 

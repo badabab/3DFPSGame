@@ -35,7 +35,8 @@ public class Bomb : MonoBehaviour
             IHitable hitable = c.gameObject.GetComponent<IHitable>();
             if (hitable != null)
             {
-                hitable.Hit(Damage);
+                DamageInfo damageInfo = new DamageInfo(DamageType.Normal, Damage);
+                hitable.Hit(damageInfo);
             }
         }
     }

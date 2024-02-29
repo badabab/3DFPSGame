@@ -24,7 +24,7 @@ public class Drum : MonoBehaviour, IHitable
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    public void Hit(int damage)
+    public void Hit(DamageInfo damage)
     {
         _hitCount++;
         if (_hitCount >= Count)
@@ -64,7 +64,8 @@ public class Drum : MonoBehaviour, IHitable
                 IHitable hitable = null;
                 if (c.TryGetComponent<IHitable>(out hitable))
                 {
-                    hitable.Hit(Damage);
+                    DamageInfo damageInfo = new DamageInfo(DamageType.Normal, Damage);
+                    hitable.Hit(damageInfo);
                 }
             }
         }
