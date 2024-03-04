@@ -41,7 +41,7 @@ public class Drum : MonoBehaviour, IHitable
         _isDestroyed = true;
 
         GameObject explosion = Instantiate(DrumEffectPrefab);
-        explosion.transform.position = this.transform.position;
+        explosion.transform.position = this.gameObject.transform.position;
 
         _rigidbody.AddForce(Vector3.up * UpForce, ForceMode.Impulse);
         _rigidbody.AddTorque(new Vector3(1, 0, 1) * UpForce / 2f);  // 회전

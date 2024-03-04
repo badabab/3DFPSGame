@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
     public UI_OptionPopup OptionUI;
 
+    public UI_GameoverPopup GameoverUI;
+
     private void Awake()
     {
         if (Instance == null)
@@ -65,6 +67,7 @@ public class GameManager : MonoBehaviour
         State = GameState.Over;
         StateTextUI.gameObject.SetActive(true);
         Refresh();
+        GameoverUI.Open();
     } 
 
     public void Refresh()
