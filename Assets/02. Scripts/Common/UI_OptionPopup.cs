@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI_OptionPopup : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class UI_OptionPopup : MonoBehaviour
     public void OnRestartButtonClicked()
     {
         Debug.Log("다시하기");
+        // 씬매니저야, ()씬을 로드해라
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
     public void OnEndButtonClicked()
     {
